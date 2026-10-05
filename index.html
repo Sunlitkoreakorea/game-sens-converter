@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>게임별 마우스 감도 변환기 — 발로란트·CS2·오버워치·배그·에이펙스</title>
+<meta name="description" content="발로란트, CS2(카스), 오버워치 2, 배틀그라운드, 에이펙스, 포트나이트, 레인보우식스, CoD 등 게임별 마우스 감도를 cm/360 기준으로 변환합니다. DPI를 직접 입력해 같은 체감 감도를 맞춰보세요.">
+<meta name="theme-color" content="#b45309">
+<link rel="canonical" href="https://sunlitkoreakorea.github.io/game-sens-converter/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="게임별 마우스 감도 변환기">
+<meta property="og:description" content="발로란트·CS2·오버워치 2·배그·에이펙스 등 게임 간 마우스 감도를 cm/360 기준으로 변환. DPI 직접 입력 지원.">
+<meta property="og:url" content="https://sunlitkoreakorea.github.io/game-sens-converter/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23b45309' stroke-width='3'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8' stroke='%23b45309' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"게임별 마우스 감도 변환기","url":"https://sunlitkoreakorea.github.io/game-sens-converter/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}
+</script>
+<style>
+  :root{
+    --bg:#f7f6f3;
+    --surface:#ffffff;
+    --surface-2:#f1efe9;
+    --border:#e6e3dc;
+    --text:#1c1a17;
+    --muted:#6b6558;
+    --accent:#b45309;
+    --accent-soft:#fdf0e3;
+    --accent-ink:#ffffff;
+    --warn:#92400e;
+    --warn-bg:#fef3c7;
+    --warn-border:#f3d58a;
+    --ok:#166534;
+    --shadow:0 1px 2px rgba(28,26,23,.04),0 8px 24px rgba(28,26,23,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#15130f;
+      --surface:#1f1c17;
+      --surface-2:#292520;
+      --border:#332e26;
+      --text:#f2ede4;
+      --muted:#a89e8c;
+      --accent:#e0975a;
+      --accent-soft:#2b2118;
+      --accent-ink:#1c1a17;
+      --warn:#f5cf8a;
+      --warn-bg:#2d2412;
+      --warn-border:#5a4620;
+      --ok:#86d19b;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Noto Sans KR",Arial,sans-serif;
+    padding:56px 16px 72px;line-height:1.5;
+  }
+  .wrap{max-width:880px;margin:0 auto}
+  header{margin-bottom:32px}
+  .eyebrow{
+    display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px;margin-bottom:16px;
+  }
+  h1{font-size:clamp(26px,4vw,36px);line-height:1.25;margin:0 0 12px;letter-spacing:-.01em}
+  header p{color:var(--muted);font-size:15px;margin:0;max-width:62ch}
+  .panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    box-shadow:var(--shadow);padding:20px;margin-bottom:20px;
+  }
+  h2{
+    font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 16px;
+  }
+  .seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:16px}
+  .seg button{
+    appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:600;
+    padding:8px 14px;border-radius:8px;cursor:pointer;min-height:36px;
+  }
+  .seg button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .field.full{grid-column:1/-1}
+  label,.lbl{font-size:13px;font-weight:600;color:var(--muted)}
+  input,select{
+    font:inherit;font-size:16px;color:var(--text);background:var(--bg);
+    border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-height:44px;width:100%;
+    font-variant-numeric:tabular-nums;
+  }
+  input::placeholder{color:var(--muted);opacity:.7}
+  input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    appearance:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);background:var(--surface-2);
+    border:1px solid var(--border);border-radius:999px;padding:5px 12px;cursor:pointer;min-height:32px;
+    font-variant-numeric:tabular-nums;
+  }
+  .chip:hover{color:var(--text);border-color:var(--accent)}
+  .hint{font-size:12.5px;color:var(--muted);margin:0}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .stat{background:var(--surface-2);border-radius:12px;padding:14px 16px;min-width:0}
+  .stat .k{font-size:12px;font-weight:600;color:var(--muted)}
+  .stat .v{font-size:clamp(20px,3.4vw,28px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;overflow-wrap:anywhere}
+  .stat .u{font-size:13px;font-weight:600;color:var(--muted);margin-left:3px}
+  .list{list-style:none;margin:0;padding:0}
+  .row{
+    display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;
+    padding:12px 4px;border-top:1px solid var(--border);
+  }
+  .row:first-child{border-top:0}
+  .row.src{background:var(--accent-soft);border-radius:10px;border-top-color:transparent;padding-left:12px;padding-right:8px}
+  .row.src + .row{border-top-color:transparent}
+  .gname{font-weight:600;font-size:15px;min-width:0}
+  .gname small{display:block;font-weight:500;font-size:12.5px;color:var(--muted)}
+  .badge{
+    display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:middle;
+    color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);
+  }
+  .badge.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-border)}
+  .val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;letter-spacing:-.01em}
+  .val .u{font-size:13px;font-weight:600;color:var(--muted);margin-left:2px}
+  .copy{
+    appearance:none;font:inherit;font-size:13px;font-weight:600;color:var(--text);background:var(--surface);
+    border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;min-height:36px;min-width:64px;
+  }
+  .copy:hover{border-color:var(--accent)}
+  .copy.done{color:var(--ok);border-color:var(--ok)}
+  .empty{color:var(--muted);font-size:14px;padding:8px 0}
+  .note{
+    font-size:13.5px;color:var(--muted);margin:0 0 10px;
+  }
+  .note strong{color:var(--text)}
+  .warnbox{
+    background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn);
+    border-radius:10px;padding:12px 14px;font-size:13.5px;margin:0 0 10px;
+  }
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
+    background:var(--surface-2);border-radius:6px;padding:2px 6px;color:var(--text);overflow-wrap:anywhere;
+  }
+  details{margin-top:6px}
+  summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--text);padding:6px 0}
+  table.yaw{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+  table.yaw th,table.yaw td{text-align:left;padding:8px 6px;border-top:1px solid var(--border)}
+  table.yaw th{font-size:12px;color:var(--muted);font-weight:600;border-top:0}
+  table.yaw td:last-child{font-variant-numeric:tabular-nums}
+  footer{border-top:1px solid var(--border);padding-top:20px;font-size:12.5px;color:var(--muted)}
+  footer a{color:var(--muted)}
+  @media (max-width:620px){
+    body{padding-top:36px}
+    .fields{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr auto;grid-template-areas:"n v" "n c";row-gap:6px}
+    .row .gname{grid-area:n}
+    .row .val{grid-area:v}
+    .row .copy{grid-area:c;justify-self:end}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .copy,.chip,.seg button{transition:border-color .15s ease,color .15s ease,background .15s ease}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Game Sens Converter</span>
+    <h1>게임별 마우스 감도 변환기</h1>
+    <p>지금 쓰는 게임의 감도와 DPI를 넣으면, 마우스를 같은 거리(cm/360°)만큼 움직였을 때 한 바퀴 도는 감도로 다른 게임 값을 계산해 줍니다.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="h-input">
+    <h2 id="h-input">내 설정</h2>
+
+    <div class="seg" role="group" aria-label="입력 방식">
+      <button type="button" id="mode-game" aria-pressed="true">게임 감도로 입력</button>
+      <button type="button" id="mode-cm" aria-pressed="false">cm/360 직접 입력</button>
+    </div>
+
+    <div class="fields">
+      <div class="field" id="f-game">
+        <label for="game">게임</label>
+        <select id="game"></select>
+      </div>
+      <div class="field" id="f-sens">
+        <label for="sens" id="sens-label">감도</label>
+        <input id="sens" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.35">
+      </div>
+      <div class="field" id="f-cm" hidden>
+        <label for="cm">360° 회전에 필요한 마우스 이동 거리 (cm)</label>
+        <input id="cm" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 33">
+        <p class="hint">마우스패드에서 실제로 한 바퀴 돌 때 움직인 거리를 자로 재서 넣으면 됩니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="dpi">내 마우스 DPI <span class="lbl">(입력)</span></label>
+        <input id="dpi" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 800">
+        <div class="chips" data-target="dpi" aria-label="DPI 빠른 선택">
+          <button type="button" class="chip" data-v="400">400</button>
+          <button type="button" class="chip" data-v="800">800</button>
+          <button type="button" class="chip" data-v="1200">1200</button>
+          <button type="button" class="chip" data-v="1600">1600</button>
+          <button type="button" class="chip" data-v="3200">3200</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="tdpi">변환 후 DPI <span class="lbl">(비우면 입력 DPI와 동일)</span></label>
+        <input id="tdpi" type="text" inputmode="numeric" autocomplete="off" placeholder="입력 DPI와 동일">
+        <div class="chips" data-target="tdpi" aria-label="변환 후 DPI 빠른 선택">
+          <button type="button" class="chip" data-v="">동일</button>
+          <button type="button" class="chip" data-v="400">400</button>
+          <button type="button" class="chip" data-v="800">800</button>
+          <button type="button" class="chip" data-v="1600">1600</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-sum">
+    <h2 id="h-sum">내 감도 요약</h2>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><div class="k">360° 회전 거리</div><div><span class="v" id="o-cm">—</span><span class="u">cm</span></div></div>
+      <div class="stat"><div class="k">360° 회전 거리</div><div><span class="v" id="o-in">—</span><span class="u">inch</span></div></div>
+      <div class="stat"><div class="k">eDPI (감도 × DPI)</div><div><span class="v" id="o-edpi">—</span></div></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-out">
+    <h2 id="h-out">게임별 변환 결과 <span id="out-dpi" style="text-transform:none;letter-spacing:0;font-weight:600"></span></h2>
+    <ul class="list" id="results" aria-live="polite"></ul>
+  </section>
+
+  <section class="panel" aria-labelledby="h-info">
+    <h2 id="h-info">계산 방식과 주의사항</h2>
+    <p class="note"><strong>cm/360</strong> = 360 × 2.54 ÷ (감도 × yaw × DPI) &nbsp;/&nbsp; <strong>변환 감도</strong> = 914.4 ÷ (cm/360 × yaw × DPI)</p>
+    <p class="note">yaw는 감도 1.0, 마우스 1카운트당 화면이 도는 각도(°)입니다. 게임마다 값이 달라서 같은 숫자의 감도라도 체감이 다릅니다.</p>
+    <p class="note">이 변환기는 <strong>좌우 360° 회전 거리</strong>만 맞춥니다. FOV(시야각), 조준경 배율, ADS 감도, 가속 설정은 반영하지 않으므로 게임 사이의 에임 체감은 조금씩 다를 수 있습니다. 변환 후에는 연습장에서 한 바퀴 돌려보며 확인해 보세요.</p>
+    <div class="warnbox"><strong>배틀그라운드 값은 실제와 크게 다를 수 있습니다.</strong> 일반 감도 슬라이더가 선형인지, yaw 값이 얼마인지 출처마다 달라서 확정하지 못했고, 이 페이지는 일부 변환기가 쓰는 값(0.002222)을 그대로 가정했습니다. 배그로 변환한 값은 참고만 하고, 배그에서 직접 한 바퀴 돌려 cm를 잰 뒤 위의 <strong>"cm/360 직접 입력"</strong>으로 다른 게임 값을 구하는 쪽이 더 정확합니다. 조준경(ADS) 감도와 수직 감도 배율은 다루지 않습니다.</div>
+    <details>
+      <summary>게임별 yaw 값 보기</summary>
+      <table class="yaw" id="yaw-table">
+        <thead><tr><th>게임</th><th>입력 단위</th><th>yaw</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer>
+    yaw 값은 공개된 감도 변환기 자료 여러 곳을 교차 확인해 사용했고, 서로 값이 달랐던 게임(Marvel Rivals, Deadlock 등)은 뺐습니다. 비공식 도구이며 각 게임사와 무관합니다.<br>
+    <a href="https://sunlitkoreakorea.github.io/">← 프로젝트 모음</a> · <a href="https://github.com/Sunlitkoreakorea/game-sens-converter">GitHub</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // yaw: 감도 1.0 · 1카운트당 회전 각도(°). dec: 결과 표시 소수 자릿수.
+  var GAMES = [
+    { id: 'valorant', name: '발로란트', en: 'VALORANT',         yaw: 0.07,          dec: 3, unit: '' },
+    { id: 'cs2',      name: 'CS2 / CS:GO', en: '카운터 스트라이크', yaw: 0.022,         dec: 3, unit: '' },
+    { id: 'ow2',      name: '오버워치 2', en: 'Overwatch 2',     yaw: 0.0066,        dec: 2, unit: '' },
+    { id: 'pubg',     name: '배틀그라운드', en: 'PUBG · 일반 감도', yaw: 0.002222,      dec: 1, unit: '', approx: true },
+    { id: 'apex',     name: '에이펙스 레전드', en: 'Apex Legends',  yaw: 0.022,         dec: 3, unit: '' },
+    { id: 'fortnite', name: '포트나이트', en: 'Fortnite · X/Y 감도', yaw: 0.005555,    dec: 2, unit: '%' },
+    { id: 'r6',       name: '레인보우 식스 시즈', en: 'Rainbow Six Siege', yaw: 0.00572957795, dec: 2, unit: '' },
+    { id: 'cod',      name: '콜 오브 듀티', en: 'MW3 · Warzone · BO6', yaw: 0.0066,    dec: 2, unit: '' },
+    { id: 'destiny2', name: '데스티니 가디언즈', en: 'Destiny 2',  yaw: 0.0066,        dec: 2, unit: '' },
+    { id: 'rust',     name: '러스트', en: 'Rust',                yaw: 0.1125,        dec: 3, unit: '' }
+  ];
+  var CM_PER_360_CONST = 360 * 2.54; // 914.4
+
+  function $(id) { return document.getElementById(id); }
+  function byId(id) { for (var i = 0; i < GAMES.length; i++) if (GAMES[i].id === id) return GAMES[i]; return GAMES[0]; }
+
+  var els = {
+    modeGame: $('mode-game'), modeCm: $('mode-cm'),
+    fGame: $('f-game'), fSens: $('f-sens'), fCm: $('f-cm'),
+    game: $('game'), sens: $('sens'), sensLabel: $('sens-label'), cm: $('cm'),
+    dpi: $('dpi'), tdpi: $('tdpi'),
+    oCm: $('o-cm'), oIn: $('o-in'), oEdpi: $('o-edpi'),
+    results: $('results'), outDpi: $('out-dpi')
+  };
+
+  var state = { mode: 'game', game: 'valorant', sens: '0.35', cm: '', dpi: '800', tdpi: '' };
+
+  // ---- 저장/복원 (불가능한 환경에서도 동작) ----
+  var KEY = 'gameSensConverter.v1';
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      if (s && typeof s === 'object') {
+        ['mode', 'game', 'sens', 'cm', 'dpi', 'tdpi'].forEach(function (k) {
+          if (typeof s[k] === 'string') state[k] = s[k];
+        });
+        if (state.mode !== 'game' && state.mode !== 'cm') state.mode = 'game';
+        if (!GAMES.some(function (g) { return g.id === state.game; })) state.game = 'valorant';
+      }
+    } catch (e) {}
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // ---- 계산 ----
+  function num(str) {
+    var n = parseFloat(String(str).replace(',', '.').trim());
+    return isFinite(n) && n > 0 ? n : NaN;
+  }
+  function cmPer360(sens, yaw, dpi) { return CM_PER_360_CONST / (sens * yaw * dpi); }
+  function sensFor(cm, yaw, dpi) { return CM_PER_360_CONST / (cm * yaw * dpi); }
+
+  function fmt(n, d) {
+    if (!isFinite(n)) return '—';
+    var s = n.toFixed(d);
+    if (s.indexOf('.') >= 0) s = s.replace(/0+$/, '').replace(/\.$/, '');
+    return s;
+  }
+
+  // ---- 렌더 ----
+  function currentSource() {
+    var dpi = num(state.dpi);
+    var cm = NaN, sens = NaN;
+    if (state.mode === 'game') {
+      sens = num(state.sens);
+      cm = cmPer360(sens, byId(state.game).yaw, dpi);
+    } else {
+      cm = num(state.cm);
+    }
+    return { dpi: dpi, sens: sens, cm: cm };
+  }
+
+  function render() {
+    var src = currentSource();
+    var g = byId(state.game);
+    var okCm = isFinite(src.cm) && src.cm > 0;
+
+    els.oCm.textContent = okCm ? fmt(src.cm, src.cm < 10 ? 2 : 1) : '—';
+    els.oIn.textContent = okCm ? fmt(src.cm / 2.54, 2) : '—';
+    els.oEdpi.textContent = (state.mode === 'game' && isFinite(src.sens) && isFinite(src.dpi))
+      ? fmt(src.sens * src.dpi, 1) : '—';
+
+    var tdpi = num(state.tdpi);
+    var outDpi = isFinite(tdpi) ? tdpi : src.dpi;
+    els.outDpi.textContent = isFinite(outDpi) ? '· DPI ' + fmt(outDpi, 0) + ' 기준' : '';
+
+    els.results.innerHTML = '';
+    if (!okCm || !isFinite(outDpi)) {
+      var li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = state.mode === 'game'
+        ? '게임, 감도, DPI를 입력하면 결과가 표시됩니다.'
+        : 'cm/360과 DPI를 입력하면 결과가 표시됩니다.';
+      els.results.appendChild(li);
+      return;
+    }
+
+    GAMES.forEach(function (game) {
+      var isSrc = state.mode === 'game' && game.id === state.game;
+      var value = isSrc && !isFinite(tdpi) ? src.sens : sensFor(src.cm, game.yaw, outDpi);
+      var text = fmt(value, game.dec);
+
+      var row = document.createElement('li');
+      row.className = 'row' + (isSrc ? ' src' : '');
+
+      var name = document.createElement('div');
+      name.className = 'gname';
+      name.textContent = game.name;
+      if (isSrc) { var b = document.createElement('span'); b.className = 'badge'; b.textContent = '내 설정'; name.appendChild(b); }
+      if (game.approx) { var w = document.createElement('span'); w.className = 'badge warn'; w.textContent = '근사값'; name.appendChild(w); }
+      var sub = document.createElement('small');
+      sub.textContent = game.en;
+      name.appendChild(sub);
+
+      var val = document.createElement('div');
+      val.className = 'val';
+      val.textContent = text;
+      if (game.unit) { var u = document.createElement('span'); u.className = 'u'; u.textContent = game.unit; val.appendChild(u); }
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy';
+      btn.textContent = '복사';
+      btn.setAttribute('aria-label', game.name + ' 감도 ' + text + ' 복사');
+      btn.addEventListener('click', function () { copyText(text, btn); });
+
+      row.appendChild(name); row.appendChild(val); row.appendChild(btn);
+      els.results.appendChild(row);
+    });
+  }
+
+  function copyText(text, btn) {
+    function done(ok) {
+      btn.textContent = ok ? '복사됨' : '실패';
+      btn.classList.toggle('done', ok);
+      setTimeout(function () { btn.textContent = '복사'; btn.classList.remove('done'); }, 1200);
+    }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      done(ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+    } else { fallback(); }
+  }
+
+  // ---- UI 동기화 ----
+  function applyMode() {
+    var isGame = state.mode === 'game';
+    els.modeGame.setAttribute('aria-pressed', String(isGame));
+    els.modeCm.setAttribute('aria-pressed', String(!isGame));
+    els.fGame.hidden = !isGame;
+    els.fSens.hidden = !isGame;
+    els.fCm.hidden = isGame;
+  }
+  function applyGameLabel() {
+    var g = byId(state.game);
+    els.sensLabel.textContent = g.unit === '%' ? g.name + ' 감도 (% 값 그대로)' : g.name + ' 감도';
+  }
+  function update() { save(); render(); }
+
+  function init() {
+    GAMES.forEach(function (g) {
+      var o = document.createElement('option');
+      o.value = g.id; o.textContent = g.name;
+      els.game.appendChild(o);
+    });
+
+    var tb = document.querySelector('#yaw-table tbody');
+    GAMES.forEach(function (g) {
+      var tr = document.createElement('tr');
+      [g.name + (g.approx ? ' (근사)' : ''), g.unit === '%' ? '%' : '감도', String(g.yaw)].forEach(function (t) {
+        var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+
+    load();
+    els.game.value = state.game;
+    els.sens.value = state.sens;
+    els.cm.value = state.cm;
+    els.dpi.value = state.dpi;
+    els.tdpi.value = state.tdpi;
+    applyMode(); applyGameLabel(); render();
+
+    els.modeGame.addEventListener('click', function () { state.mode = 'game'; applyMode(); update(); });
+    els.modeCm.addEventListener('click', function () { state.mode = 'cm'; applyMode(); update(); });
+    els.game.addEventListener('change', function () { state.game = els.game.value; applyGameLabel(); update(); });
+    els.sens.addEventListener('input', function () { state.sens = els.sens.value; update(); });
+    els.cm.addEventListener('input', function () { state.cm = els.cm.value; update(); });
+    els.dpi.addEventListener('input', function () { state.dpi = els.dpi.value; update(); });
+    els.tdpi.addEventListener('input', function () { state.tdpi = els.tdpi.value; update(); });
+
+    Array.prototype.forEach.call(document.querySelectorAll('.chips'), function (box) {
+      var target = box.getAttribute('data-target');
+      box.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t || !t.classList || !t.classList.contains('chip')) return;
+        var v = t.getAttribute('data-v');
+        state[target] = v;
+        els[target].value = v;
+        update();
+      });
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

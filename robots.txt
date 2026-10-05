@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sunlitkoreakorea.github.io/game-sens-converter/sitemap.xml
