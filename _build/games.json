@@ -1,0 +1,41 @@
+[
+  { "id": "valorant", "slug": "valorant", "name": "발로란트", "short": "발로란트", "en": "VALORANT",
+    "yaw": 0.07, "dec": 3, "unit": "", "defaultSens": 0.35,
+    "typical": [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6] },
+
+  { "id": "cs2", "slug": "cs2", "name": "CS2 / CS:GO", "short": "CS2", "en": "카운터 스트라이크",
+    "yaw": 0.022, "dec": 3, "unit": "", "defaultSens": 1.2,
+    "typical": [0.8, 1, 1.2, 1.5, 1.8, 2, 2.5, 3] },
+
+  { "id": "ow2", "slug": "overwatch-2", "name": "오버워치 2", "short": "오버워치 2", "en": "Overwatch 2",
+    "yaw": 0.0066, "dec": 2, "unit": "", "defaultSens": 5,
+    "typical": [3, 4, 5, 6, 7, 8, 10, 12] },
+
+  { "id": "pubg", "slug": "pubg", "name": "배틀그라운드", "short": "배그", "en": "PUBG · 일반 감도 (정수, 한 칸 ≈ 4.7%)",
+    "curve": "exp15", "base": 0.042, "baseSens": 50, "range": [1, 100],
+    "dec": 0, "unit": "", "approx": true, "defaultSens": 50 },
+
+  { "id": "apex", "slug": "apex-legends", "name": "에이펙스 레전드", "short": "에이펙스", "en": "Apex Legends",
+    "yaw": 0.022, "dec": 3, "unit": "", "defaultSens": 1.5,
+    "typical": [0.8, 1, 1.2, 1.5, 1.8, 2, 2.5, 3] },
+
+  { "id": "fortnite", "slug": "fortnite", "name": "포트나이트", "short": "포트나이트", "en": "Fortnite · X/Y 감도",
+    "yaw": 0.005555, "dec": 2, "unit": "%", "defaultSens": 6.5,
+    "typical": [4, 5, 6, 7, 8, 10, 12] },
+
+  { "id": "r6", "slug": "rainbow-six-siege", "name": "레인보우 식스 시즈", "short": "레식", "en": "Rainbow Six Siege",
+    "yaw": 0.00572957795, "dec": 2, "unit": "", "defaultSens": 10,
+    "typical": [5, 6, 8, 10, 12, 15, 20] },
+
+  { "id": "cod", "slug": "call-of-duty", "name": "콜 오브 듀티", "short": "CoD", "en": "MW3 · Warzone · BO6",
+    "yaw": 0.0066, "dec": 2, "unit": "", "defaultSens": 6,
+    "typical": [3, 4, 5, 6, 7, 8, 10, 12] },
+
+  { "id": "destiny2", "slug": "destiny-2", "name": "데스티니 가디언즈", "short": "데스티니 2", "en": "Destiny 2",
+    "yaw": 0.0066, "dec": 2, "unit": "", "defaultSens": 6,
+    "typical": [3, 4, 5, 6, 7, 8, 10, 12] },
+
+  { "id": "rust", "slug": "rust", "name": "러스트", "short": "러스트", "en": "Rust",
+    "yaw": 0.1125, "dec": 3, "unit": "", "defaultSens": 0.5,
+    "typical": [0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1] }
+]

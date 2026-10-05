@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#b45309">
+<link rel="canonical" href="{{URL}}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="게임별 마우스 감도 변환기">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESC}}">
+<meta property="og:url" content="{{URL}}">
+<meta property="og:image" content="{{ORIGIN}}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="게임별 마우스 감도 변환기 — cm/360 기준 변환">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESC}}">
+<meta name="twitter:image" content="{{ORIGIN}}/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23b45309' stroke-width='3'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8' stroke='%23b45309' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="{{ROOT}}style.css">
+<script type="application/ld+json">{{JSONLD}}</script>
+</head>
+<body data-game="{{PRESET}}">
+<div class="wrap">
+  <header>
+    {{EYEBROW}}
+    <h1>{{H1}}</h1>
+  </header>
+
+  <section class="panel" aria-labelledby="h-input">
+    <h2 id="h-input">내 설정</h2>
+
+    <div class="seg" role="group" aria-label="입력 방식">
+      <button type="button" id="mode-game" aria-pressed="true">게임 감도로 입력</button>
+      <button type="button" id="mode-cm" aria-pressed="false">cm/360 직접 입력</button>
+    </div>
+
+    <div class="fields">
+      <div class="field" id="f-game">
+        <label for="game">게임</label>
+        <select id="game"></select>
+      </div>
+      <div class="field" id="f-sens">
+        <label for="sens" id="sens-label">감도</label>
+        <input id="sens" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.35">
+      </div>
+      <div class="field" id="f-cm" hidden>
+        <label for="cm">360° 회전에 필요한 마우스 이동 거리 (cm)</label>
+        <input id="cm" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 33">
+        <p class="hint">마우스패드에서 실제로 한 바퀴 돌 때 움직인 거리를 자로 재서 넣으면 됩니다.</p>
+      </div>
+
+      <div class="field">
+        <label for="dpi">내 마우스 DPI <span class="lbl">(입력)</span></label>
+        <input id="dpi" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 800">
+        <div class="chips" data-target="dpi" aria-label="DPI 빠른 선택">
+          <button type="button" class="chip" data-v="400">400</button>
+          <button type="button" class="chip" data-v="800">800</button>
+          <button type="button" class="chip" data-v="1200">1200</button>
+          <button type="button" class="chip" data-v="1600">1600</button>
+          <button type="button" class="chip" data-v="3200">3200</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="tdpi">변환 후 DPI <span class="lbl">(비우면 입력 DPI와 동일)</span></label>
+        <input id="tdpi" type="text" inputmode="numeric" autocomplete="off" placeholder="입력 DPI와 동일">
+        <div class="chips" data-target="tdpi" aria-label="변환 후 DPI 빠른 선택">
+          <button type="button" class="chip" data-v="">동일</button>
+          <button type="button" class="chip" data-v="400">400</button>
+          <button type="button" class="chip" data-v="800">800</button>
+          <button type="button" class="chip" data-v="1600">1600</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-sum">
+    <h2 id="h-sum">내 감도 요약</h2>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><div class="k">360° 회전 거리</div><div><span class="v" id="o-cm">—</span><span class="u">cm</span></div></div>
+      <div class="stat"><div class="k">360° 회전 거리</div><div><span class="v" id="o-in">—</span><span class="u">inch</span></div></div>
+      <div class="stat"><div class="k">eDPI (감도 × DPI)</div><div><span class="v" id="o-edpi">—</span></div></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-out">
+    <div class="panel-head">
+      <h2 id="h-out">게임별 변환 결과 <span id="out-dpi" style="text-transform:none;letter-spacing:0;font-weight:600"></span></h2>
+      <button type="button" class="copy" id="share" aria-label="현재 설정이 담긴 링크 복사">링크 복사</button>
+    </div>
+    <ul class="list" id="results" aria-live="polite"></ul>
+  </section>
+{{EXTRA_TOP}}
+  <section class="panel" aria-labelledby="h-info">
+    <h2 id="h-info">계산 방식과 주의사항</h2>
+    <p class="note"><strong>cm/360</strong> = 360 × 2.54 ÷ (감도 × yaw × DPI) &nbsp;/&nbsp; <strong>변환 감도</strong> = 914.4 ÷ (cm/360 × yaw × DPI)</p>
+    <p class="note">yaw는 감도 1.0, 마우스 1카운트당 화면이 도는 각도(°)입니다. 게임마다 값이 달라서 같은 숫자의 감도라도 체감이 다릅니다.</p>
+    <p class="note">이 변환기는 <strong>좌우 360° 회전 거리</strong>만 맞춥니다. FOV(시야각), 조준경 배율, ADS 감도, 가속 설정은 반영하지 않으므로 게임 사이의 에임 체감은 조금씩 다를 수 있습니다. 변환 후에는 연습장에서 한 바퀴 돌려보며 확인해 보세요.</p>
+    <div class="warnbox"><strong>배틀그라운드는 근사값입니다.</strong> 배그 일반 감도는 선형이 아니라 <strong>지수 곡선(슬라이더 15칸마다 속도 2배)</strong>이라서, 같은 계산식(감도 × yaw)을 쓸 수 없습니다. 곡선의 모양은 한국 커뮤니티 자료 여러 곳에서 일치했지만, 기준점(슬라이더 50 ≈ 0.042°/카운트)은 제보된 대응값 1건(발로란트 0.19 @ 1600 DPI ≈ 배그 25)으로 맞춘 값이라 오차가 있을 수 있습니다. 슬라이더가 정수라서 한 칸 차이는 약 4.7%입니다. 정확히 맞추려면 직접 360°를 돌려 cm를 재고 위의 <strong>"cm/360 직접 입력"</strong>을 쓰세요. 조준경(ADS)·수직 감도 배율은 다루지 않습니다.</div>
+    <details>
+      <summary>게임별 yaw 값 보기</summary>
+      <table class="yaw">
+        <thead><tr><th>게임</th><th>입력 단위</th><th>yaw</th></tr></thead>
+        <tbody>
+{{YAW_ROWS}}
+        </tbody>
+      </table>
+    </details>
+  </section>
+{{EXTRA_BOTTOM}}
+  <footer>
+    yaw 값은 공개된 감도 변환기 자료 여러 곳을 교차 확인해 사용했고, 서로 값이 달랐던 게임(Marvel Rivals, Deadlock 등)은 뺐습니다. 비공식 도구이며 각 게임사와 무관합니다.<br>
+    <a href="https://sunlitkoreakorea.github.io/">← 프로젝트 모음</a> · <a href="https://github.com/Sunlitkoreakorea/game-sens-converter">GitHub</a>
+  </footer>
+</div>
+
+<script>window.__GAMES={{GAMES_JSON}};</script>
+<script src="{{ROOT}}app.js"></script>
+</body>
+</html>
